@@ -22,6 +22,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\TradfriLib.XML</DocumentationFile>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -136,6 +140,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Color.cs" />
+    <Compile Include="Data\Controller.cs" />
+    <Compile Include="Data\DeviceInformation.cs" />
+    <Compile Include="Data\Enums\PowerSourceType.cs" />
+    <Compile Include="Data\Lamp.cs" />
+    <Compile Include="Data\Enums\LampState.cs" />
+    <Compile Include="Data\TradfriDevice.cs" />
+    <Compile Include="Data\Enums\TradfriDeviceType.cs" />
+    <Compile Include="Json\TradfriController.cs" />
+    <Compile Include="Json\TradfriDevice.cs" />
+    <Compile Include="Json\TradfriGroup.cs" />
+    <Compile Include="Json\TradfriLamp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
