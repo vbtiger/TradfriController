@@ -19,6 +19,6 @@ namespace TradfriLib.Data
 		/// <summary>
 		/// Remote controller (5 buttons)
 		/// </summary>
-		Controller = 2
+		RemoteController = 2
 	}
 }

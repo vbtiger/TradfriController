@@ -109,9 +109,9 @@ namespace TradfriLib.Data
 			else if (preparedJson.Contains("Value15009"))
 			{
 				// Controller
-				var controller = Newtonsoft.Json.JsonConvert.DeserializeObject<TradfriController>(preparedJson);
+				var controller = Newtonsoft.Json.JsonConvert.DeserializeObject<TradfriRemoteController>(preparedJson);
 
-				return new Controller(controller) { RawJson = jsonValue };
+				return new RemoteController(controller) { RawJson = jsonValue };
 			}
 			else
 			{
@@ -149,7 +149,7 @@ namespace TradfriLib.Data
 		/// <returns>Main device information string</returns>
 		public override string ToString()
 		{
-			return $"{this.DeviceType}, {this.Name}, Available={this.Reachable}, {this.DeviceInfo}, JSON:{this.RawJson}";
+			return $"{this.Id},{this.DeviceType}, \"{this.Name}\", Available={this.Reachable}, {this.DeviceInfo}";
 		}
 
 		#endregion

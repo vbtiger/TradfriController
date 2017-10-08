@@ -71,7 +71,7 @@ namespace TradfriLib.Data
 			//else if (Math.Abs(lightingValues.Value5709 - 24900) < 150 && Math.Abs(lightingValues.Value5710 - 24700) < 150)
 			//	this.Color = Color.ColdWhite4000K;
 			//else
-				this.Color = new Color(lightingValues.Value5709, lightingValues.Value5710);
+			this.Color = new Color(lightingValues.Value5709, lightingValues.Value5710, lightingValues.Value5706);
 
 			this.DeviceType = TradfriDeviceType.Lamp;
 		}
@@ -92,7 +92,7 @@ namespace TradfriLib.Data
 		/// <returns>Lamp device information string</returns>
 		public override string ToString()
 		{
-			return $"{this.DeviceType}, \"{this.Name}\", Available={this.Reachable}, State={this.State}, Dim={this.Brightness}, {this.Color}";
+			return $"{base.ToString()}, State={this.State}, Dim={this.Brightness}, {this.Color}";
 		}
 
 		#endregion

@@ -8,7 +8,7 @@ namespace TradfriLib.Data
 	/// <summary>
 	/// Remote controller
 	/// </summary>
-	public class Controller : TradfriDevice
+	public class RemoteController : TradfriDevice
 	{
 		#region FIELDS
 
@@ -30,9 +30,9 @@ namespace TradfriLib.Data
 
 		#region CONSTRUCTOR
 
-		internal Controller(Json.TradfriController jsonController) : base(jsonController)
+		internal RemoteController(Json.TradfriRemoteController jsonController) : base(jsonController)
 		{
-			this.DeviceType = TradfriDeviceType.Controller;
+			this.DeviceType = TradfriDeviceType.RemoteController;
 		}
 
 		#endregion

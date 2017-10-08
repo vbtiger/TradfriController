@@ -52,7 +52,16 @@ namespace TradfriLib.Data
 		/// <returns>Device information string</returns>
 		public override string ToString()
 		{
-			return "{DeviceInfo}";
+			string batteryInfo = "";
+
+			if (this.PowerSourceType == PowerSourceType.Battery
+				|| this.PowerSourceType == PowerSourceType.ExternalBattery
+				|| this.PowerSourceType == PowerSourceType.InternalBattery)
+			{
+				batteryInfo = $",{this.BatteryLevel}%";
+			}
+
+			return $"v{this.FirmwareVersion},{this.PowerSourceType}" + batteryInfo;
 		}
 	}
 }

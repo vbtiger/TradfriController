@@ -2,7 +2,7 @@
 
 namespace TradfriLib.Json
 {
-	internal class TradfriController : TradfriDevice
+	internal class TradfriRemoteController : TradfriDevice
 	{
 		public struct ValueType15009
 		{
