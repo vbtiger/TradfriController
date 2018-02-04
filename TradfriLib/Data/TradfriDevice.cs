@@ -81,11 +81,11 @@ namespace TradfriLib.Data
 
 			this.DeviceInfo = new DeviceInformation(jsonDevice.Value3);
 
-			this.CreatedAt = UnixTimestampToDateTime(jsonDevice.Value9002);
+			this.CreatedAt = Utility.UnixTimestampToDateTime(jsonDevice.Value9002);
 
 			this.Reachable = jsonDevice.Value9019 != 0;
 
-			this.LastSeen = UnixTimestampToDateTime(jsonDevice.Value9020);
+			this.LastSeen = Utility.UnixTimestampToDateTime(jsonDevice.Value9020);
 		}
 
 		/// <summary>
@@ -126,18 +126,6 @@ namespace TradfriLib.Data
 
 		#region METHODS
 
-		/// <summary>
-		/// https://stackoverflow.com/questions/249760/how-to-convert-a-unix-timestamp-to-datetime-and-vice-versa
-		/// </summary>
-		/// <param name="unixTimeStamp"></param>
-		/// <returns></returns>
-		private static DateTime UnixTimestampToDateTime(double unixTimeStamp)
-		{
-			// Unix timestamp is seconds past epoch
-			DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-			return dtDateTime;
-		}
 
 		#endregion
 

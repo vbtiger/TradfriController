@@ -51,7 +51,7 @@ namespace TradfriLib.Data
 		/// <returns>Remote control device information string</returns>
 		public override string ToString()
 		{
-			return $"{this.DeviceType}, \"{this.Name}\"";
+			return $"{this.DeviceType}, \"{this.Name}\", {this.DeviceInfo}";
 		}
 
 		#endregion

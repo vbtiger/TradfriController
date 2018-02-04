@@ -104,12 +104,12 @@ namespace TradfriLib
 
 
 		/// <summary>
-		/// Queries all existing devices know by the LAN controller
+		/// Queries all existing devices known by the LAN controller
 		/// </summary>
 		/// <returns></returns>
 		public static List<TradfriDevice> GetDevices()
 		{
-			coapClient.UriPath = CommandConstants.uniqueDevices + "/";
+			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/";
 			Response response = coapClient.Get();
 
 			var deviceIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(response.PayloadString);
@@ -125,6 +125,27 @@ namespace TradfriLib
 		}
 
 		/// <summary>
+		/// Queries all existing groups known by the LAN controller
+		/// </summary>
+		/// <returns></returns>
+		public static List<TradfriGroup> GetGroups()
+		{
+			coapClient.UriPath = $"{CommandConstants.groups}/";
+			Response response = coapClient.Get();
+
+			var groupIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(response.PayloadString);
+
+			List<TradfriGroup> groups = new List<TradfriGroup>();
+
+			foreach (int id in groupIds)
+			{
+				groups.Add(GetGroup(id));
+			}
+
+			return groups;
+		}
+
+		/// <summary>
 		/// Queries a single device by its unique device id
 		/// </summary>
 		/// <param name="deviceId">Unique device id</param>
@@ -137,10 +158,17 @@ namespace TradfriLib
 			return TradfriDevice.Parse(response.PayloadString);
 		}
 
-		// TODO
-		public static void GetGroups()
+		/// <summary>
+		/// Queries a single group by its unique group id
+		/// </summary>
+		/// <param name="groupId"></param>
+		/// <returns></returns>
+		public static TradfriGroup GetGroup(int groupId)
 		{
+			coapClient.UriPath = $"{CommandConstants.groups}/{groupId}";
+			Response response = coapClient.Get();
 
+			return TradfriGroup.Parse(response.PayloadString);
 		}
 
 		/// <summary>
@@ -161,62 +189,84 @@ namespace TradfriLib
 			return true;
 		}
 
-
-		public static void SetLamp(Lamp modifiedLamp)
-		{
-			if (CheckDevice(modifiedLamp.Id) == false)
-				return;
-
-			var currentLampValue = GetDevice(modifiedLamp.Id) as Lamp;
-
-			if (currentLampValue.Color.Name != modifiedLamp.Color.Name)
-				SetColor(modifiedLamp.Id, modifiedLamp.Color);
-
-			if (currentLampValue.Brightness != modifiedLamp.Brightness)
-				SetBrightness(modifiedLamp.Id, modifiedLamp.Brightness);
-
-			if (currentLampValue.State != modifiedLamp.State)
-				SetState(modifiedLamp.Id, modifiedLamp.State);
-		}
-
-
-		public static Response SetBrightness(int lampId, byte newBrightness)
+		/// <summary>
+		/// Sets the brightness of the target lamp to the given brightness value
+		/// </summary>
+		/// <param name="lampId">Target device ID</param>
+		/// <param name="newBrightness">Desired brightness value</param>
+		/// <returns>Controller response object</returns>
+		public static ControllerResponse SetBrightness(int lampId, byte newBrightness)
 		{
 			if (CheckDevice(lampId) == false)
-				return null;
+				return new ControllerResponse(StatusCode.DeviceUnreachable);
 
 			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			return coapClient.Put("{ \"3311\":[{ \"5851\": " + newBrightness + "}]}");
+			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5851\": " + newBrightness + "}]}"));
+
+			if (result.StatusCode == StatusCode.Changed)
+				return (GetDevice(lampId) as Lamp)?.Brightness == newBrightness ? result : new ControllerResponse(StatusCode.NotModified);
+			else
+				return result;
 		}
 
-
-		public static Response SetColor(int lampId, Color newColor)
+		/// <summary>
+		/// Sets the color of the target lamp to the given color value
+		/// </summary>
+		/// <param name="lampId">Target device ID</param>
+		/// <param name="newColor">Desired color</param>
+		/// <returns>Controller response object</returns>
+		public static ControllerResponse SetColor(int lampId, Color newColor)
 		{
 			if (CheckDevice(lampId) == false)
-				return null;
+				return new ControllerResponse(StatusCode.DeviceUnreachable);
 
 			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			return coapClient.Put("{ \"3311\":[{ \"5709\": " + newColor.Value5709 + ", \"5710\": " + newColor.Value5710 + "}]}");
+			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5709\": " + newColor.Value5709 + ", \"5710\": " + newColor.Value5710 + "}]}"));
+
+			if (result.StatusCode == StatusCode.Changed)
+				return (GetDevice(lampId) as Lamp)?.Color == newColor ? result : new ControllerResponse(StatusCode.NotModified);
+			else
+				return result;
 		}
 
-
-		public static Response SetColorByRGB(int lampId, string rgb)
+		/// <summary>
+		/// Sets the color of the target lamp to the given RGB value
+		/// </summary>
+		/// <param name="lampId">Target device ID</param>
+		/// <param name="rgb">Desired color value by RGB</param>
+		/// <returns>Controller response object</returns>
+		public static ControllerResponse SetColorByRGB(int lampId, string rgb)
 		{
 			if (CheckDevice(lampId) == false)
-				return null;
+				return new ControllerResponse(StatusCode.DeviceUnreachable);
 
 			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			return coapClient.Put("{ \"3311\":[{ \"5706\": \"" + rgb + "\"}]}");
+			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5706\": \"" + rgb + "\"}]}"));
+
+			if (result.StatusCode == StatusCode.Changed)
+				return (GetDevice(lampId) as Lamp)?.Color.ValueRgb == rgb ? result : new ControllerResponse(StatusCode.NotModified);
+			else
+				return result;
 		}
 
-
-		public static Response SetState(int lampId, LampState newState)
+		/// <summary>
+		/// Sets the state of the target lamp
+		/// </summary>
+		/// <param name="lampId">Target device ID</param>
+		/// <param name="newState">Desired lamp state</param>
+		/// <returns>Controller response object</returns>
+		public static ControllerResponse SetState(int lampId, LampState newState)
 		{
 			if (CheckDevice(lampId) == false)
-				return null;
+				return new ControllerResponse(StatusCode.DeviceUnreachable);
 
 			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			return coapClient.Put("{ \"3311\":[{ \"5850\": " + (int)newState + "}]}");
+			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5850\": " + (int)newState + "}]}"));
+
+			if (result.StatusCode == StatusCode.Changed)
+				return (GetDevice(lampId) as Lamp)?.State == newState ? result : new ControllerResponse(StatusCode.NotModified);
+			else
+				return result;
 		}
 
 
