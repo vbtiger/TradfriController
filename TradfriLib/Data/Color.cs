@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TradfriLib.Data
 {
@@ -15,6 +16,30 @@ namespace TradfriLib.Data
 		private readonly string _name;
 		private readonly int _temperature;
 
+		private static readonly IReadOnlyList<Color> availableColors = new List<Color>
+																	   {
+																		   Blue,
+																		   LightBlue,
+																		   SaturatedPurple,
+																		   Lime,
+																		   LightPurple,
+																		   Yellow,
+																		   SaturatedPink,
+																		   DarkPeach,
+																		   SaturatedRed,
+																		   ColdSky,
+																		   Pink,
+																		   Peach,
+																		   WarmAmber,
+																		   LightPink,
+																		   CoolDaylight,
+																		   Candlelight,
+																		   Sunrise,
+																		   CoolWhite,
+																		   WarmWhite,
+																		   WarmGlow
+																	   }.AsReadOnly();
+
 		#endregion
 
 		#region PROPERTIES
@@ -23,105 +48,110 @@ namespace TradfriLib.Data
 		#region Built-In colors
 
 		/// <summary>
+		/// Returns all supported built-in colors
+		/// </summary>
+		public static IReadOnlyList<Color> AvailableColors => availableColors;
+
+		/// <summary>
 		/// Blue
 		/// </summary>
-		public static Color Blue { get { return new Color(11469, 3277, "4a418a", "Blue"); } }
+		public static Color Blue => new Color(11469, 3277, "4A418A", "Blue");
 
 		/// <summary>
 		/// Light Blue
 		/// </summary>
-		public static Color LightBlue { get { return new Color(13107, 6554, "6c83ba", "Light Blue"); } }
+		public static Color LightBlue => new Color(13107, 6554, "6C83BA", "Light Blue");
 
 		/// <summary>
 		/// Saturated Purple
 		/// </summary>
-		public static Color SaturatedPurple { get { return new Color(20316, 8520, "8f2686", "Saturated Purple"); } }
+		public static Color SaturatedPurple => new Color(20316, 8520, "8F2686", "Saturated Purple");
 
 		/// <summary>
 		/// Lime
 		/// </summary>
-		public static Color Lime { get { return new Color(26870, 33423, "a9d62b", "Lime"); } }
+		public static Color Lime => new Color(26870, 33423, "A9D62B", "Lime");
 
 		/// <summary>
 		/// Light Purple
 		/// </summary>
-		public static Color LightPurple { get { return new Color(22282, 12452, "c984bb", "Light Purple"); } }
+		public static Color LightPurple => new Color(22282, 12452, "C984BB", "Light Purple");
 
 		/// <summary>
 		/// Yellow
 		/// </summary>
-		public static Color Yellow { get { return new Color(29491, 30802, "d6e44b", "Yellow"); } }
+		public static Color Yellow => new Color(29491, 30802, "D6E44B", "Yellow");
 
 		/// <summary>
 		/// Saturated Pink
 		/// </summary>
-		public static Color SaturatedPink { get { return new Color(32768, 15729, "d9337c", "Saturated Pink"); } }
+		public static Color SaturatedPink => new Color(32768, 15729, "D9337C", "Saturated Pink");
 
 		/// <summary>
 		/// Dark Peach
 		/// </summary>
-		public static Color DarkPeach { get { return new Color(40632, 22282, "da5d41", "Dark Peach"); } }
+		public static Color DarkPeach => new Color(40632, 22282, "DA5D41", "Dark Peach");
 
 		/// <summary>
 		/// Saturated Red
 		/// </summary>
-		public static Color SaturatedRed { get { return new Color(42926, 21299, "dc4b31", "Saturated Red"); } }
+		public static Color SaturatedRed => new Color(42926, 21299, "DC4B31", "Saturated Red");
 
 		/// <summary>
 		/// Cold Sky
 		/// </summary>
-		public static Color ColdSky { get { return new Color(21109, 21738, "dcf0f8", "Cold sky"); } }
+		public static Color ColdSky => new Color(21109, 21738, "DCF0F8", "Cold sky");
 
 		/// <summary>
 		/// Pink
 		/// </summary>
-		public static Color Pink { get { return new Color(32768, 18350, "e491af", "Pink"); } }
+		public static Color Pink => new Color(32768, 18350, "E491AF", "Pink");
 
 		/// <summary>
 		/// Peach
 		/// </summary>
-		public static Color Peach { get { return new Color(38011, 22938, "e57345", "Peach"); } }
+		public static Color Peach => new Color(38011, 22938, "E57345", "Peach");
 
 		/// <summary>
 		/// Warm Amber
 		/// </summary>
-		public static Color WarmAmber { get { return new Color(38011, 24904, "e78834", "Warm Amber"); } }
+		public static Color WarmAmber => new Color(38011, 24904, "E78834", "Warm Amber");
 
 		/// <summary>
 		/// Light Pink
 		/// </summary>
-		public static Color LightPink { get { return new Color(29491, 18350, "e8bedd", "Light Pink"); } }
+		public static Color LightPink => new Color(29491, 18350, "E8BEDD", "Light Pink");
 
 		/// <summary>
 		/// Cool Daylight
 		/// </summary>
-		public static Color CoolDaylight { get { return new Color(22616, 23042, "eaf6fb", "Cool daylight"); } }
+		public static Color CoolDaylight => new Color(22616, 23042, "EAF6FB", "Cool daylight");
 
 		/// <summary>
 		/// Candlelight
 		/// </summary>
-		public static Color Candlelight { get { return new Color(35848, 26214, "ebb63e", "Candlelight"); } }
+		public static Color Candlelight => new Color(35848, 26214, "EBB63E", "Candlelight");
 
 		/// <summary>
 		/// Sunrise
 		/// </summary>
-		public static Color Sunrise { get { return new Color(28633, 26483, "f2eccf", "Sunrise"); } }
+		public static Color Sunrise => new Color(28633, 26483, "F2ECCF", "Sunrise");
 
 
 		/// <summary>
 		/// Cool White
 		/// </summary>
-		public static Color CoolWhite { get { return new Color(24930, 24694, "f5faf6", "Cool white"); } }
+		public static Color CoolWhite => new Color(24930, 24694, "F5FAF6", "Cool white");
 
 		/// <summary>
 		/// Warm White
 		/// </summary>
-		public static Color WarmWhite { get { return new Color(30140, 26909, "f1e0b5", "Warm white"); } }
+		public static Color WarmWhite => new Color(30140, 26909, "F1E0B5", "Warm white");
 
 		/// <summary>
 		/// Warm Glow
 		/// </summary>
-		public static Color WarmGlow { get { return new Color(33135, 27211, "efd275", "Warm glow"); } }
+		public static Color WarmGlow => new Color(33135, 27211, "EFD275", "Warm glow");
 
 		#endregion
 
@@ -130,10 +160,7 @@ namespace TradfriLib.Data
 		/// X value according to the Planckian locus
 		/// <para>See: https://en.wikipedia.org/wiki/Planckian_locus </para>
 		/// </summary>
-		public int Value5709
-		{
-			get { return this._value5709; }
-		}
+		public int Value5709 => this._value5709;
 
 		/// <summary>
 		/// Y value according to the Planckian locus
@@ -147,26 +174,17 @@ namespace TradfriLib.Data
 		/// <summary>
 		/// RGB value of the color
 		/// </summary>
-		public string ValueRGB
-		{
-			get { return this._valueRGB; }
-		}
+		public string ValueRgb => this._valueRGB;
 
 		/// <summary>
 		/// Common name of the color
 		/// </summary>
-		public string Name
-		{
-			get { return this._name; }
-		}
+		public string Name => this._name;
 
 		/// <summary>
 		/// Temperature value of the light (in Kelvin)
 		/// </summary>
-		public int Temperature
-		{
-			get { return _temperature; }
-		}
+		public int Temperature => this._temperature;
 
 		#endregion
 
@@ -283,7 +301,7 @@ namespace TradfriLib.Data
 		{
 			var xy = ConvertTemperatureToXY(temperature);
 
-			string rgb = CalculateRgb(temperature).ToLower();
+			string rgb = CalculateRgb(temperature).ToUpperInvariant();
 
 			return new Color(xy.Item1, xy.Item2, rgb, temperature + "K");
 		}
@@ -379,7 +397,7 @@ namespace TradfriLib.Data
 		/// <returns>Color information string</returns>
 		public override string ToString()
 		{
-			return $"{this._name},\"{this.ValueRGB}\",{{{this.Value5709};{this._value5710}}}";
+			return $"{this._name},\"{this.ValueRgb}\",{{{this.Value5709};{this._value5710}}}";
 		}
 
 		#endregion
