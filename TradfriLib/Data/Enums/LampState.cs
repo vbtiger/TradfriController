@@ -1,5 +1,4 @@
-﻿
-namespace TradfriLib.Data
+﻿namespace TradfriLib.Data.Enums
 {
 	/// <summary>
 	/// Lamp state

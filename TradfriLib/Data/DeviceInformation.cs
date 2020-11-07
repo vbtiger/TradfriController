@@ -1,4 +1,5 @@
-﻿
+﻿using TradfriLib.Data.Enums;
+
 namespace TradfriLib.Data
 {
 	/// <summary>

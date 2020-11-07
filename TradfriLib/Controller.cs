@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -7,9 +8,11 @@ using Com.AugustCellars.CoAP;
 using Com.AugustCellars.CoAP.DTLS;
 using Com.AugustCellars.CoAP.Net;
 using Com.AugustCellars.COSE;
+
 using PeterO.Cbor;
 
 using TradfriLib.Data;
+using TradfriLib.Data.Enums;
 
 namespace TradfriLib
 {
@@ -20,40 +23,17 @@ namespace TradfriLib
 	{
 		private struct CommandConstants
 		{
-			public const int uniqueDevices = 15001;
-			public const int groups = 15004;
-			public const int moods = 15005;
+			public const int UniqueDevices = 15001;
+			public const int Groups = 15004;
+			public const int Moods = 15005;
 		}
 
 
-		#region FIELDS
+		private static IPEndPoint _controllerAddress;
+		private static string _connectionSecurityKey;
 
-		private static IPEndPoint controllerAddress;
-		private static string connectionSecurityKey;
+		private static CoapClient _coapClient;
 
-		private static CoapClient coapClient;
-
-		#endregion
-
-		#region EVENTS
-
-
-
-		#endregion
-
-		#region PROPERTIES
-
-
-
-		#endregion
-
-		#region CONSTRUCTOR
-
-
-
-		#endregion
-
-		#region METHODS
 
 		/// <summary>
 		/// Initializes the connection with the LAN controller
@@ -63,21 +43,26 @@ namespace TradfriLib
 		public static void InitializeConnection(IPEndPoint endPoint, string securityKey)
 		{
 			if (endPoint == null)
+			{
 				throw new ArgumentNullException(nameof(endPoint));
+			}
+
 			if (string.IsNullOrWhiteSpace(securityKey))
+			{
 				throw new ArgumentNullException(nameof(securityKey));
+			}
 
 			try
 			{
-				controllerAddress = endPoint;
-				connectionSecurityKey = securityKey;
+				_controllerAddress = endPoint;
+				_connectionSecurityKey = securityKey;
 
 				OneKey userKey = new OneKey();
 				userKey.Add(CoseKeyKeys.KeyType, GeneralValues.KeyType_Octet);
-				userKey.Add(CoseKeyParameterKeys.Octet_k, CBORObject.FromObject(Encoding.UTF8.GetBytes(connectionSecurityKey)));
+				userKey.Add(CoseKeyParameterKeys.Octet_k, CBORObject.FromObject(Encoding.UTF8.GetBytes(_connectionSecurityKey)));
 
 				CoAPEndPoint coapEndPoint = new DTLSClientEndPoint(userKey);
-				coapClient = new CoapClient(new Uri($"coaps://{controllerAddress.Address}:{controllerAddress.Port}/"))
+				_coapClient = new CoapClient(new Uri($"coaps://{_controllerAddress.Address}:{_controllerAddress.Port}/"))
 				{
 					EndPoint = coapEndPoint
 				};
@@ -85,8 +70,8 @@ namespace TradfriLib
 
 				// there has to be a GET operation to successfully open the connection
 
-				coapClient.UriPath = CommandConstants.uniqueDevices + "/";
-				coapClient.Get();
+				_coapClient.UriPath = CommandConstants.UniqueDevices + "/";
+				_coapClient.Get();
 			}
 			catch (Exception ex)
 			{
@@ -99,7 +84,7 @@ namespace TradfriLib
 		/// </summary>
 		public static void DisposeConnection()
 		{
-			coapClient.EndPoint.Stop();
+			_coapClient.EndPoint.Stop();
 		}
 
 
@@ -109,19 +94,12 @@ namespace TradfriLib
 		/// <returns></returns>
 		public static List<TradfriDevice> GetDevices()
 		{
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/";
-			Response response = coapClient.Get();
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/";
+			Response response = _coapClient.Get();
 
 			var deviceIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(response.PayloadString);
 
-			List<TradfriDevice> devices = new List<TradfriDevice>();
-
-			foreach (int id in deviceIds)
-			{
-				devices.Add(GetDevice(id));
-			}
-
-			return devices;
+			return deviceIds.Select(GetDevice).ToList();
 		}
 
 		/// <summary>
@@ -130,19 +108,12 @@ namespace TradfriLib
 		/// <returns></returns>
 		public static List<TradfriGroup> GetGroups()
 		{
-			coapClient.UriPath = $"{CommandConstants.groups}/";
-			Response response = coapClient.Get();
+			_coapClient.UriPath = $"{CommandConstants.Groups}/";
+			Response response = _coapClient.Get();
 
 			var groupIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(response.PayloadString);
 
-			List<TradfriGroup> groups = new List<TradfriGroup>();
-
-			foreach (int id in groupIds)
-			{
-				groups.Add(GetGroup(id));
-			}
-
-			return groups;
+			return groupIds.Select(GetGroup).ToList();
 		}
 
 		/// <summary>
@@ -152,8 +123,8 @@ namespace TradfriLib
 		/// <returns></returns>
 		public static TradfriDevice GetDevice(int deviceId)
 		{
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{deviceId}";
-			Response response = coapClient.Get();
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/{deviceId}";
+			Response response = _coapClient.Get();
 
 			return TradfriDevice.Parse(response.PayloadString);
 		}
@@ -165,8 +136,8 @@ namespace TradfriLib
 		/// <returns></returns>
 		public static TradfriGroup GetGroup(int groupId)
 		{
-			coapClient.UriPath = $"{CommandConstants.groups}/{groupId}";
-			Response response = coapClient.Get();
+			_coapClient.UriPath = $"{CommandConstants.Groups}/{groupId}";
+			Response response = _coapClient.Get();
 
 			return TradfriGroup.Parse(response.PayloadString);
 		}
@@ -198,15 +169,21 @@ namespace TradfriLib
 		public static ControllerResponse SetBrightness(int lampId, byte newBrightness)
 		{
 			if (CheckDevice(lampId) == false)
+			{
 				return new ControllerResponse(StatusCode.DeviceUnreachable);
+			}
 
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5851\": " + newBrightness + "}]}"));
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/{lampId}";
+			var result = new ControllerResponse(_coapClient.Put("{ \"3311\":[{ \"5851\": " + newBrightness + "}]}"));
 
 			if (result.StatusCode == StatusCode.Changed)
+			{
 				return (GetDevice(lampId) as Lamp)?.Brightness == newBrightness ? result : new ControllerResponse(StatusCode.NotModified);
+			}
 			else
+			{
 				return result;
+			}
 		}
 
 		/// <summary>
@@ -218,15 +195,21 @@ namespace TradfriLib
 		public static ControllerResponse SetColor(int lampId, Color newColor)
 		{
 			if (CheckDevice(lampId) == false)
+			{
 				return new ControllerResponse(StatusCode.DeviceUnreachable);
+			}
 
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5709\": " + newColor.Value5709 + ", \"5710\": " + newColor.Value5710 + "}]}"));
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/{lampId}";
+			var result = new ControllerResponse(_coapClient.Put("{ \"3311\":[{ \"5709\": " + newColor.Value5709 + ", \"5710\": " + newColor.Value5710 + "}]}"));
 
 			if (result.StatusCode == StatusCode.Changed)
+			{
 				return (GetDevice(lampId) as Lamp)?.Color == newColor ? result : new ControllerResponse(StatusCode.NotModified);
+			}
 			else
+			{
 				return result;
+			}
 		}
 
 		/// <summary>
@@ -238,15 +221,21 @@ namespace TradfriLib
 		public static ControllerResponse SetColorByRGB(int lampId, string rgb)
 		{
 			if (CheckDevice(lampId) == false)
+			{
 				return new ControllerResponse(StatusCode.DeviceUnreachable);
+			}
 
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5706\": \"" + rgb + "\"}]}"));
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/{lampId}";
+			var result = new ControllerResponse(_coapClient.Put("{ \"3311\":[{ \"5706\": \"" + rgb + "\"}]}"));
 
 			if (result.StatusCode == StatusCode.Changed)
+			{
 				return (GetDevice(lampId) as Lamp)?.Color.ValueRgb == rgb ? result : new ControllerResponse(StatusCode.NotModified);
+			}
 			else
+			{
 				return result;
+			}
 		}
 
 		/// <summary>
@@ -258,24 +247,22 @@ namespace TradfriLib
 		public static ControllerResponse SetState(int lampId, LampState newState)
 		{
 			if (CheckDevice(lampId) == false)
+			{
 				return new ControllerResponse(StatusCode.DeviceUnreachable);
+			}
 
-			coapClient.UriPath = $"{CommandConstants.uniqueDevices}/{lampId}";
-			var result = new ControllerResponse(coapClient.Put("{ \"3311\":[{ \"5850\": " + (int)newState + "}]}"));
+			_coapClient.UriPath = $"{CommandConstants.UniqueDevices}/{lampId}";
+			var result = new ControllerResponse(_coapClient.Put("{ \"3311\":[{ \"5850\": " + (int)newState + "}]}"));
 
 			if (result.StatusCode == StatusCode.Changed)
+			{
 				return (GetDevice(lampId) as Lamp)?.State == newState ? result : new ControllerResponse(StatusCode.NotModified);
+			}
 			else
+			{
 				return result;
+			}
 		}
 
-
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
-
-
-
-		#endregion
 	}
 }

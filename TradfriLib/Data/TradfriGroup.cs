@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using TradfriLib.Data.Enums;
+
 namespace TradfriLib.Data
 {
 	/// <summary>
@@ -10,19 +12,8 @@ namespace TradfriLib.Data
 	/// </summary>
 	public class TradfriGroup
 	{
-		#region FIELDS
-
 		private byte _brightness;
 
-		#endregion
-
-		#region EVENTS
-
-
-
-		#endregion
-
-		#region PROPERTIES
 
 		/// <summary>
 		/// Unique identifier
@@ -70,10 +61,6 @@ namespace TradfriLib.Data
 		/// </summary>
 		public IReadOnlyList<TradfriDevice> Devices { get; protected set; }
 
-		#endregion
-
-		#region CONSTRUCTOR
-
 		internal TradfriGroup(Json.TradfriGroup jsonGroup)
 		{
 			this.Id = jsonGroup.Value9003;
@@ -103,10 +90,6 @@ namespace TradfriLib.Data
 			this.Devices = devices;
 		}
 
-		#endregion
-
-		#region METHODS
-
 		/// <summary>
 		/// Parses the given JSON formatted string and returns a group object
 		/// </summary>
@@ -122,10 +105,6 @@ namespace TradfriLib.Data
 			return new TradfriGroup(jsonGroup);
 		}
 
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
-
 		/// <summary>
 		/// Converts this object to a string representation containing relevant property contents
 		/// </summary>
@@ -135,8 +114,6 @@ namespace TradfriLib.Data
 			string devicesString = string.Join($"\t\t{Environment.NewLine}", this.Devices.Select(d => d.ToString()));
 			return $"{this.Id}, Group:\"{this.Name}\", State={this.State}, Brightness={this.Brightness},{Environment.NewLine}\tDevices:{Environment.NewLine}{devicesString}";
 		}
-
-		#endregion
 	}
 
 }

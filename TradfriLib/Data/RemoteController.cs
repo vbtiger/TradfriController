@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using TradfriLib.Data.Enums;
 
 namespace TradfriLib.Data
 {
@@ -10,40 +7,10 @@ namespace TradfriLib.Data
 	/// </summary>
 	public class RemoteController : TradfriDevice
 	{
-		#region FIELDS
-
-
-
-		#endregion
-
-		#region EVENTS
-
-
-
-		#endregion
-
-		#region PROPERTIES
-
-
-
-		#endregion
-
-		#region CONSTRUCTOR
-
 		internal RemoteController(Json.TradfriRemoteController jsonController) : base(jsonController)
 		{
 			this.DeviceType = TradfriDeviceType.RemoteController;
 		}
-
-		#endregion
-
-		#region METHODS
-
-
-
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
 
 		/// <summary>
 		/// Converts this object to a string representation containing relevant property contents
@@ -53,8 +20,6 @@ namespace TradfriLib.Data
 		{
 			return $"{this.DeviceType}, \"{this.Name}\", {this.DeviceInfo}";
 		}
-
-		#endregion
 	}
 
 }

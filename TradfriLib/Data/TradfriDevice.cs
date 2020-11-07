@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
+using TradfriLib.Data.Enums;
 using TradfriLib.Json;
 
 namespace TradfriLib.Data
@@ -10,20 +11,6 @@ namespace TradfriLib.Data
 	/// </summary>
 	public class TradfriDevice
 	{
-		#region FIELDS
-
-
-
-		#endregion
-
-		#region EVENTS
-
-
-
-		#endregion
-
-		#region PROPERTIES
-
 		/// <summary>
 		/// Unique identifier
 		/// </summary>
@@ -64,9 +51,6 @@ namespace TradfriLib.Data
 		/// </summary>
 		public string RawJson { get; protected set; }
 
-		#endregion
-
-		#region CONSTRUCTOR
 
 		private TradfriDevice()
 		{
@@ -122,14 +106,6 @@ namespace TradfriLib.Data
 			}
 		}
 
-		#endregion
-
-		#region METHODS
-
-
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
 
 		/// <summary>
 		/// Converts this object to a string representation containing relevant property contents
@@ -139,11 +115,6 @@ namespace TradfriLib.Data
 		{
 			return $"{this.Id},{this.DeviceType}, \"{this.Name}\", Available={this.Reachable}, {this.DeviceInfo}";
 		}
-
-		#endregion
-
-
-
 	}
 
 }

@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using TradfriLib.Data.Enums;
+
 namespace TradfriLib.Data
 {
 	/// <summary>
@@ -7,19 +9,7 @@ namespace TradfriLib.Data
 	/// </summary>
 	public class Lamp : TradfriDevice
 	{
-		#region FIELDS
-
 		private byte _brightness;
-
-		#endregion
-
-		#region EVENTS
-
-
-
-		#endregion
-
-		#region PROPERTIES
 
 		/// <summary>
 		/// State of the lamp (ON / OFF)
@@ -52,9 +42,6 @@ namespace TradfriLib.Data
 		/// </summary>
 		public Color Color { get; set; }
 
-		#endregion
-
-		#region CONSTRUCTOR
 
 		internal Lamp(Json.TradfriLamp jsonLamp) : base(jsonLamp)
 		{
@@ -75,15 +62,6 @@ namespace TradfriLib.Data
 			this.DeviceType = TradfriDeviceType.Lamp;
 		}
 
-		#endregion
-
-		#region METHODS
-
-
-
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
 
 		/// <summary>
 		/// Converts this object to a string representation containing relevant property contents
@@ -93,8 +71,6 @@ namespace TradfriLib.Data
 		{
 			return $"{base.ToString()}, State={this.State}, Dim={this.Brightness}, {this.Color}";
 		}
-
-		#endregion
 	}
 
 }

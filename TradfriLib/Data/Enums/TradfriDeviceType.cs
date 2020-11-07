@@ -1,5 +1,5 @@
 ﻿
-namespace TradfriLib.Data
+namespace TradfriLib.Data.Enums
 {
 	/// <summary>
 	/// Type of a device

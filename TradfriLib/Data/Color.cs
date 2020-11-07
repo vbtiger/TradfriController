@@ -8,8 +8,6 @@ namespace TradfriLib.Data
 	/// </summary>
 	public class Color
 	{
-		#region FIELDS
-
 		private readonly int _value5709;
 		private readonly int _value5710;
 		private readonly string _valueRGB;
@@ -39,11 +37,6 @@ namespace TradfriLib.Data
 																		   WarmWhite,
 																		   WarmGlow
 																	   }.AsReadOnly();
-
-		#endregion
-
-		#region PROPERTIES
-
 
 		#region Built-In colors
 
@@ -186,10 +179,6 @@ namespace TradfriLib.Data
 		/// </summary>
 		public int Temperature => this._temperature;
 
-		#endregion
-
-		#region CONSTRUCTOR
-
 		internal Color(int value5709, int value5710, string valueRgb)
 		{
 			this._value5709 = value5709;
@@ -206,14 +195,12 @@ namespace TradfriLib.Data
 			this._name = name;
 		}
 
-		#endregion
-
-		#region METHODS
-
 		private static Tuple<int, int> ConvertTemperatureToXY(int temperature)
 		{
 			if (temperature < 2200 || 4000 < temperature)
+			{
 				throw new ArgumentOutOfRangeException(nameof(temperature));
+			}
 
 			///////////////////////////////////////////////////////////////////
 			// Source:                                                       //
@@ -351,10 +338,14 @@ namespace TradfriLib.Data
 				double yErrorCurrent = Math.Abs(y - xy.Item2);
 
 				if (xErrorCurrent > xError || yErrorCurrent > yError)
+				{
 					continue;
+				}
 
 				if (xError <= 0 && yError <= 0)
+				{
 					return bestTemperature;
+				}
 
 				xError = xErrorCurrent;
 				yError = yErrorCurrent;
@@ -387,10 +378,6 @@ namespace TradfriLib.Data
 			return $"{(int)r:X2}{(int)g:X2}{(int)b:X2}";
 		}
 
-		#endregion
-
-		#region OVERRIDES for interfaces and base types
-
 		/// <summary>
 		/// Converts this object to a string representation containing relevant property contents
 		/// </summary>
@@ -399,8 +386,5 @@ namespace TradfriLib.Data
 		{
 			return $"{this._name},\"{this.ValueRgb}\",{{{this.Value5709};{this._value5710}}}";
 		}
-
-		#endregion
 	}
-
 }
